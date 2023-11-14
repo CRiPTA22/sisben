@@ -1,0 +1,168 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <algorithm>
+
+using namespace std;
+
+struct Municipio {
+    string nombre;
+    int cantidadDepartamentos;
+    int cantidadHombres;
+    int cantidadMujeres;
+    double edadPromedio;
+    double ingresosPromedio;
+};
+
+struct Departamento {
+    string nombre;
+    double temperaturaMedia;
+};
+
+// Función para buscar un municipio por nombre
+int buscarMunicipio(const vector<Municipio>& municipios, const string& nombre) {
+    for (int i = 0; i < municipios.size(); ++i) {
+        if (municipios[i].nombre == nombre) {
+            return i;
+        }
+    }
+    return -1; // Si no se encuentra el municipio
+}
+
+int main() {
+    string nombreUsuario;
+    cout << "Por favor, ingrese su nombre: ";
+    cin >> nombreUsuario;
+
+    vector<Municipio> municipios;
+    vector<Departamento> departamentos;
+
+    while (true) {
+        int opcion;
+        cout << "Menú de opciones:" << endl;
+        cout << "1. Agregar municipio" << endl;
+        cout << "2. Editar municipio" << endl;
+        cout << "3. Eliminar municipio" << endl;
+        cout << "4. Buscar departamento en un municipio" << endl;
+        cout << "5. Consultar departamentos con ingreso superior a un valor" << endl;
+        cout << "6. Consultar departamentos con población igual a un valor" << endl;
+        cout << "7. Visualizar total del censo por departamento" << endl;
+        cout << "8. Visualizar total del censo a nivel nacional" << endl;
+        cout << "9. Guardar y salir" << endl;
+        cout << "Seleccione una opción: ";
+        cin >> opcion;
+
+        if (opcion == 1) {
+            Municipio municipio;
+            cout << "Nombre del municipio: ";
+            cin >> municipio.nombre;
+            cout << "Cantidad de departamentos: ";
+            cin >> municipio.cantidadDepartamentos;
+            cout << "Cantidad total de hombres: ";
+            cin >> municipio.cantidadHombres;
+            cout << "Cantidad total de mujeres: ";
+            cin >> municipio.cantidadMujeres;
+            cout << "Edad promedio de la población: ";
+            cin >> municipio.edadPromedio;
+            cout << "Ingresos promedio: ";
+            cin >> municipio.ingresosPromedio;
+
+            municipios.push_back(municipio);
+        } else if (opcion == 2) {
+            string nombreMunicipio;
+            cout << "Ingrese el nombre del municipio a editar: ";
+            cin >> nombreMunicipio;
+            int index = buscarMunicipio(municipios, nombreMunicipio);
+            if (index != -1) {
+                Municipio& municipio = municipios[index];
+                cout << "Editar municipio " << municipio.nombre << ":" << endl;
+                cout << "Cantidad de departamentos: ";
+                cin >> municipio.cantidadDepartamentos;
+                cout << "Cantidad total de hombres: ";
+                cin >> municipio.cantidadHombres;
+                cout << "Cantidad total de mujeres: ";
+                cin >> municipio.cantidadMujeres;
+                cout << "Edad promedio de la población: ";
+                cin >> municipio.edadPromedio;
+                cout << "Ingresos promedio: ";
+                cin >> municipio.ingresosPromedio;
+            } else {
+                cout << "El municipio no se encuentra en la lista." << endl;
+            }
+        } else if (opcion == 3) {
+            string nombreMunicipio;
+            cout << "Ingrese el nombre del municipio a eliminar: ";
+            cin >> nombreMunicipio;
+            int index = buscarMunicipio(municipios, nombreMunicipio);
+            if (index != -1) {
+                municipios.erase(municipios.begin() + index);
+                cout << "El municipio ha sido eliminado." << endl;
+            } else {
+                cout << "El municipio no se encuentra en la lista." << endl;
+            }
+        } else if (opcion == 4) {
+            // Buscar departamento en un municipio (implementación necesaria)
+            // Puedes solicitar el nombre del municipio y el nombre del departamento, luego buscar si existe el departamento en el municipio.
+        } else if (opcion == 5) {
+            double ingresoMinimo;
+            cout << "Ingrese el valor mínimo de ingreso: ";
+            cin >> ingresoMinimo;
+            for (const Departamento& departamento : departamentos) {
+                if (departamento.temperaturaMedia > ingresoMinimo) {
+                    cout << "Departamento: " << departamento.nombre << " - Temperatura Media: " << departamento.temperaturaMedia << endl;
+                }
+            }
+        } else if (opcion == 6) {
+            int poblacionObjetivo;
+            cout << "Ingrese el valor de población a buscar: ";
+            cin >> poblacionObjetivo;
+            for (const Municipio& municipio : municipios) {
+                if (municipio.cantidadHombres + municipio.cantidadMujeres == poblacionObjetivo) {
+                    cout << "Municipio: " << municipio.nombre << " - Población total: " << poblacionObjetivo << endl;
+                }
+            }
+        } else if (opcion == 7) {
+            // Visualizar total del censo por departamento (implementación necesaria)
+        } else if (opcion == 8) {
+            int censoTotal = 0;
+            for (const Municipio& municipio : municipios) {
+                censoTotal += municipio.cantidadHombres + municipio.cantidadMujeres;
+            }
+            cout << "Censo total a nivel nacional: " << censoTotal << endl;
+        } else if (opcion == 9) {
+            ofstream archivo("datos.txt");
+            if (archivo.is_open()) {
+                archivo << "Nombre del usuario: " << nombreUsuario << endl;
+
+                archivo << "Municipios:" << endl;
+                for (const Municipio& municipio : municipios) {
+                    archivo << "Nombre: " << municipio.nombre << endl;
+                    archivo << "Cantidad de departamentos: " << municipio.cantidadDepartamentos << endl;
+                    archivo << "Cantidad total de hombres: " << municipio.cantidadHombres << endl;
+                    archivo << "Cantidad total de mujeres: " << municipio.cantidadMujeres << endl;
+                    archivo << "Edad promedio de la población: " << municipio.edadPromedio << endl;
+                    archivo << "Ingresos promedio: " << municipio.ingresosPromedio << endl;
+                    archivo << endl;
+                }
+
+                archivo << "Departamentos:" << endl;
+                for (const Departamento& departamento : departamentos) {
+                    archivo << "Nombre: " << departamento.nombre << endl;
+                    archivo << "Temperatura media del departamento: " << departamento.temperaturaMedia << endl;
+                    archivo << endl;
+                }
+
+                archivo.close();
+            } else {
+                cout << "No se pudo abrir el archivo para guardar los datos." << endl;
+            }
+
+            break;
+        } else {
+            cout << "Opción no válida. Por favor, seleccione una opción válida." << endl;
+        }
+    }
+
+    return 0;
+}
